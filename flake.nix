@@ -76,14 +76,14 @@
           old: rec {
             version = "29.0.50";
             src = emacs-src;
-            patch = [ ];
-            postPatch = old.postPatch ++ ''
+            patches = [ ];
+            postPatch = old.postPatch + ''
               substituteInPlace lisp/loadup.el \
               --replace '(emacs-repository-get-branch)' '"master"'
             '';
             configureFlags = (prev.lib.remove "--with-xft" old.configureFlags)
                              ++ prev.lib.singleton "--with-pgtk";
-            postInstall = old.postInstall ++ ''
+            postInstall = old.postInstall + ''
               cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
               cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
             '';
