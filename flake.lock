@@ -1,0 +1,61 @@
+{
+  "nodes": {
+    "emacs-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1644463519,
+        "narHash": "sha256-4i/ltwRVjHn3W7O2KqehVRWnQhSEp/wDMw/g056dzb0=",
+        "ref": "master",
+        "rev": "c867a43872e6ac7830bad8842918f337c480c9c5",
+        "revCount": 154344,
+        "type": "git",
+        "url": "https://git.savannah.gnu.org/git/emacs.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.savannah.gnu.org/git/emacs.git"
+      }
+    },
+    "emacs-vterm-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1640506671,
+        "narHash": "sha256-uSzIDmRNk7u5VtCXYu+JVN7Gzkc65axCiK0Jq0X6MWQ=",
+        "owner": "akermu",
+        "repo": "emacs-libvterm",
+        "rev": "a940dd2ee8a82684860e320c0f6d5e15d31d916f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "akermu",
+        "repo": "emacs-libvterm",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1644359234,
+        "narHash": "sha256-u/sBnRgrFrn9W8gZMS6vN3ZnJsoTvbws968TpqwlDJQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c5051e2b5fe9fab43a64f0e0d06b62c81a890b90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "emacs-src": "emacs-src",
+        "emacs-vterm-src": "emacs-vterm-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
