@@ -79,19 +79,39 @@
               substituteInPlace lisp/loadup.el \
               --replace '(emacs-repository-get-branch)' '"master"'
             '';
+
+            # Without nix, I usually configure like this:
+            #   ./configure --with-native-compilation --with-pgtk \
+            #               --prefix=$HOME/.local \
+            #               CFLAGS='-O3 -pipe -march=native -fomit-frame-pointer -fPIC'
+
+            # It seems like nix specifies a lot of things that are
+            # actually default in emacs 29, and I have no idea if the
+            # CFLAGS are actually getting through. The
+            # --disable-build-details flag could be added to the
+            # non-nix configure command to be more like nix. Of course
+            # the prefix is different.
+
+            # The parallel building works if the nix command is given
+            # a --cores flag. It might work regardless, not sure.
+            # Without nix, it's simply:
+            #   make -jN where N is the number
+            # of processes that are allowed to run in parallel.
+
             configureFlags = (prev.lib.remove "--with-xft" old.configureFlags)
                              ++ prev.lib.singleton "--with-pgtk";
+            NIX_CFLAGS_COMPILE = [ (prev.NIX_CFLAGS_COMPILE or "") ]
+                                 ++ [ "-O3" "-march=native" "-fPIC" "-fomit-frame-pointer" ];
+            enableParallelBuilding = true;
 
-            # TODO: site-lisp isn't in auto-loads, not sure what to do
+            # I think with this, we do get vterm working correctly,
+            # but it should probably be included in the emacs config
+            # via:
+            #   (use-package vterm :straight nil :ensure nil)
             postInstall = old.postInstall + ''
               cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
               cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
             '';
-
-            # Should this be CFLAGS? should I use configureFlagsArray?
-            NIX_CFLAGS_COMPILE = [ "-O3" "-march=native" "-fomit-frame-pointer" ];
-
-            enableParallelBuilding = true;
           }
         );
       };
