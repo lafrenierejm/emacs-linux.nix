@@ -15,8 +15,6 @@
 
   outputs = { self, nixpkgs, emacs-vterm-src, emacs-src, ... }:
     let
-      emacsRevision = "";
-      emacsSha = "";
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs {
@@ -83,6 +81,8 @@
             '';
             configureFlags = (prev.lib.remove "--with-xft" old.configureFlags)
                              ++ prev.lib.singleton "--with-pgtk";
+
+            # TODO: site-lisp isn't in auto-loads, not sure what to do
             postInstall = old.postInstall + ''
               cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
               cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
@@ -91,7 +91,6 @@
             # Should this be CFLAGS? should I use configureFlagsArray?
             NIX_CFLAGS_COMPILE = [ "-O3" "-march=native" "-fomit-frame-pointer" ];
 
-            # will this work? should I use makeFlags?
             enableParallelBuilding = true;
           }
         );
