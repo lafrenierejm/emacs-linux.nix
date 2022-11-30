@@ -70,6 +70,7 @@
           srcRepo = true;
           nativeComp = true;
           withSQLite3 = true;
+          withPgtk = true;
         }).overrideAttrs (
           old: rec {
             version = "30.0.50";
@@ -90,7 +91,9 @@
             # CFLAGS are actually getting through. The
             # --disable-build-details flag could be added to the
             # non-nix configure command to be more like nix. Of course
-            # the prefix is different.
+            # the prefix is different. I've replaced the nix configure
+            # flags to be more reasonable with the current master
+            # branch of emacs.
 
             # The parallel building works if the nix command is given
             # a --cores flag. It might work regardless, not sure.
@@ -98,14 +101,16 @@
             #   make -jN where N is the number
             # of processes that are allowed to run in parallel.
 
-            configureFlags = (prev.lib.remove "--with-xft" old.configureFlags)
-                             ++ prev.lib.singleton "--with-pgtk";
+            configureFlags = [ "--disable-build-details" "--with-pgtk" "--with-native-compilation" ];
             NIX_CFLAGS_COMPILE = [ (prev.NIX_CFLAGS_COMPILE or "") ]
                                  ++ [ "-O3" "-march=native" "-fPIC" "-fomit-frame-pointer" ];
+
+            # this should be default?
+            # https://github.com/NixOS/nixpkgs/blob/a115bb9bd56831941be3776c8a94005867f316a7/pkgs/applications/editors/emacs/generic.nix#L83
             enableParallelBuilding = true;
 
             # I think with this, we do get vterm working correctly,
-            # but it should probably be included in the emacs config
+            # but it should probably be included in my emacs config
             # via:
             #   (use-package vterm :straight nil :ensure nil)
             postInstall = old.postInstall + ''
