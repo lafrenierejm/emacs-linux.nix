@@ -72,7 +72,7 @@
           withSQLite3 = true;
         }).overrideAttrs (
           old: rec {
-            version = "29.0.50";
+            version = "30.0.50";
             src = emacs-src;
             patches = [ ];
             postPatch = old.postPatch + ''
