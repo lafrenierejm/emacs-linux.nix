@@ -70,7 +70,8 @@
           srcRepo = true;
           nativeComp = true;
           withSQLite3 = true;
-          withPgtk = true;
+          withGTK3 = true;
+          # withPgtk = true;
         }).overrideAttrs (
           old: rec {
             version = "30.0.50";
@@ -101,13 +102,19 @@
             #   make -jN where N is the number
             # of processes that are allowed to run in parallel.
 
-            configureFlags = [ "--disable-build-details" "--with-pgtk" "--with-native-compilation" ];
+            configureFlags = [
+                               "--disable-build-details"
+                               # "--with-pgtk"
+                               "--with-native-compilation"
+                               "--with-xinput2"
+                             ];
+
             NIX_CFLAGS_COMPILE = [ (prev.NIX_CFLAGS_COMPILE or "") ]
                                  ++ [ "-O3" "-march=native" "-fPIC" "-fomit-frame-pointer" ];
 
             # this should be default?
             # https://github.com/NixOS/nixpkgs/blob/a115bb9bd56831941be3776c8a94005867f316a7/pkgs/applications/editors/emacs/generic.nix#L83
-            enableParallelBuilding = true;
+            # enableParallelBuilding = true;
 
             # I think with this, we do get vterm working correctly,
             # but it should probably be included in my emacs config
