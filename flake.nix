@@ -82,26 +82,6 @@
               --replace '(emacs-repository-get-branch)' '"master"'
             '';
 
-            # Without nix, I usually configure like this:
-            #   ./configure --with-native-compilation --with-pgtk \
-            #               --prefix=$HOME/.local \
-            #               CFLAGS='-O3 -pipe -march=native -fomit-frame-pointer -fPIC'
-
-            # It seems like nix specifies a lot of things that are
-            # actually default in emacs 29, and I have no idea if the
-            # CFLAGS are actually getting through. The
-            # --disable-build-details flag could be added to the
-            # non-nix configure command to be more like nix. Of course
-            # the prefix is different. I've replaced the nix configure
-            # flags to be more reasonable with the current master
-            # branch of emacs.
-
-            # The parallel building works if the nix command is given
-            # a --cores flag. It might work regardless, not sure.
-            # Without nix, it's simply:
-            #   make -jN where N is the number
-            # of processes that are allowed to run in parallel.
-
             configureFlags = [
                                "--disable-build-details"
                                # "--with-pgtk"
@@ -109,17 +89,11 @@
                                "--with-xinput2"
                              ];
 
-            NIX_CFLAGS_COMPILE = [ (prev.NIX_CFLAGS_COMPILE or "") ]
-                                 ++ [ "-O3" "-march=native" "-fPIC" "-fomit-frame-pointer" ];
+            # I don't know which one of these is correct
+            # NIX_CFLAGS_COMPILE = [ (prev.NIX_CFLAGS_COMPILE or "") ]
+            #                      ++ [ "-O3" "-march=native" "-fPIC" "-fomit-frame-pointer" ];
+            CFLAGS = "-O3 -march=native -fPIC -fomit-frame-pointer";
 
-            # this should be default?
-            # https://github.com/NixOS/nixpkgs/blob/a115bb9bd56831941be3776c8a94005867f316a7/pkgs/applications/editors/emacs/generic.nix#L83
-            # enableParallelBuilding = true;
-
-            # I think with this, we do get vterm working correctly,
-            # but it should probably be included in my emacs config
-            # via:
-            #   (use-package vterm :straight nil :ensure nil)
             postInstall = old.postInstall + ''
               cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
               cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
