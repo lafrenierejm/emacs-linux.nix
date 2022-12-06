@@ -27,6 +27,8 @@
         emacs = nixpkgsFor.${system}.emacs;
         emacs-vterm = nixpkgsFor.${system}.emacs-vterm;
         emacs-i3-integration = nixpkgsFor.${system}.emacs-i3-integration;
+        emacs-sway-integration = nixpkgsFor.${system}.emacs-sway-integration;
+        emacs-xsway-integration = nixpkgsFor.${system}.emacs-xsway-integration;
       });
 
       overlay = final: prev: {
@@ -108,6 +110,28 @@
             emacsclient -s x11 -e "$command"
           else
             i3-msg $@
+          fi
+        '';
+
+        # TODO: test one of the two sway integrations. if one works, both should work
+
+        # for non-pgtk emacs in sway with xwayland
+        emacs-xsway-integration = prev.writeShellScriptBin "emacs-xsway-integration" ''
+          if [[ $(swaymsg -t get_tree | ${prev.jq}/bin/./jq 'recurse(.nodes[]) | select(.focused) | .window_properties.class') == "Emacs" ]]; then
+            command="(my/emacs-sway-integration \"$@\")"
+            emacsclient -s wayland -e "$command"
+          else
+            swaymsg $@
+          fi
+        '';
+
+        # for pgtk emacs in sway with pure wayland
+        emacs-sway-integration = prev.writeShellScriptBin "emacs-sway-integration" ''
+        if [[ $(swaymsg -t get_tree | ${prev.jq}/bin/./jq 'recurse(.nodes[]) | select(.focused) | .app_id') == "emacs" ]]; then
+            command="(my/emacs-sway-integration \"$@\")"
+            emacsclient -s wayland -e "$command"
+          else
+            swaymsg $@
           fi
         '';
       };
