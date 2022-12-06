@@ -26,6 +26,7 @@
       packages = forAllSystems (system: {
         emacs = nixpkgsFor.${system}.emacs;
         emacs-vterm = nixpkgsFor.${system}.emacs-vterm;
+        emacs-i3-integration = nixpkgsFor.${system}.emacs-i3-integration;
       });
 
       overlay = final: prev: {
@@ -100,6 +101,15 @@
             '';
           }
         );
+
+        emacs-i3-integration = prev.writeShellScriptBin "emacs-i3-integration" ''
+          if [[ $(${prev.xdotool}/bin/./xdotool getactivewindow getwindowclassname) == "Emacs" ]]; then
+            command="(my/emacs-i3-integration \"$@\")"
+            emacsclient -s x11 -e "$command"
+          else
+            i3-msg $@
+          fi
+        '';
       };
     };
 }
