@@ -24,6 +24,7 @@
   :commands (asy-mode))
 
 ;; TODO: possibly switch lilypond to gitlab.com/lilypond/lilypond
+;; TODO: possibly create a github repo and action that builds lilypond-words and install this mode from there
 (elpaca-use-package
   (lilypond-mode :type git
 	             :host nil
@@ -33,7 +34,6 @@
   :mode ("\\.ly$" . LilyPond-mode)
   :commands (LilyPond-mode))
 
-;; TODO: when vterm is installed by nix, does this double the work? it's probably fine
 (elpaca-use-package vterm)
 (elpaca-use-package vterm-toggle
   :after vterm

@@ -79,7 +79,7 @@
   (defalias 'org-babel-execute:julia 'org-babel-execute:julia-vterm)
   (defalias 'org-babel-variable-assignments:julia 'org-babel-variable-assignments:julia-vterm))
 
-;; TODO: why this line with ox-html?
+;; TODO: why do we need ox-html? I can't remember why this was added
 (elpaca-use-package ox-html :ensure nil :after ox)
 (elpaca-use-package ox-hugo :after ox)
 ;; TODO: ox-reveal

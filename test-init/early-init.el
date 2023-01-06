@@ -34,8 +34,8 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(fringe-mode '(1 . 1)) ;; TODO: is this what we want?
-(blink-cursor-mode -1) ;; TODO: do we want this?
+(fringe-mode '(1 . 1)) ;; TODO: is this fringe what I want?
+(blink-cursor-mode -1) ;; TODO: do I want a non-blinking cursor?
 
 ;; Set up how new frames should look
 ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))

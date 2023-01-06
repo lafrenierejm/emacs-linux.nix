@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-;; TODO: eglot and treesitter need set up
+;; TODO: set up eglot and treesitter
 
 (provide 'init-lsp-ts)
 
