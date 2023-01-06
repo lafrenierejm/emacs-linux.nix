@@ -1,8 +1,7 @@
 ;;; init.el --- Initialization file -*- lexical-binding: t; -*-
-
 ;;; Commentary:
-
 ;;; Code:
+
 
 ;; Some basic settings
 
@@ -29,51 +28,23 @@
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 
-;; Bootstrap desired package system (elpaca or straight)
+;; Packages, functions, etc.
 
 (require 'bootstrap-elpaca)
+(require 'i3-integration)
+(require 'my-functions)
+(require 'init-keybindings)
+(require 'init-completion)
+(require 'init-lsp-ts)
+(require 'init-org)
+(require 'emacsanywhere)
+(require 'init-projects)
+(require 'init-other)
+(require 'init-latex)
+(require 'init-pdftools)
+(require 'init-notetools)
+(require 'init-elfeed)
+(require 'init-theme)
 
-
-;; Theme
-
-;; (elpaca-use-package ef-themes
-;;   :config (load-theme 'ef-bio))
-
-(load-theme 'modus-vivendi)
-
-
-;; Packages
-
-(elpaca-use-package diminish)
-(elpaca-use-package vterm :ensure nil)
-
-
-;;; keybindings
-
-(elpaca-use-package evil
-  :demand t
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-respect-visual-line-mode t)
-  :config (evil-mode 1))
-
-(elpaca-use-package evil-collection
-  :demand t
-  :after evil
-  :config
-  (evil-collection-init))
-
-(elpaca-use-package evil-commentary
-  :demand t
-  :after evil
-  :diminish evil-commentary-mode
-  :config (evil-commentary-mode))
-
-(elpaca-use-package evil-surround
-  :demand t
-  :after evil
-  :diminish evil-surround-mode
-  :config (global-evil-surround-mode 1))
 
 ;;; init.el ends here
