@@ -1,10 +1,12 @@
 ## Emacs with vterm on NixOS
 
-This flake provides an overlay of emacs with vterm. It is used to be a modification of [this](https://github.com/cmacrae/emacs/blob/master/flake.nix), but that's now removed and a much simpler version is left in its place. This is really just for personal use, but feel free to use anything you think would be useful.
+This flake provides an overlay of emacs with vterm. Installing in emacs (rather than directly with nix as it's done here) doesn't work because the vterm module can't compile. This gives the overlay I like to use.
+
+It is used to be a modification of [this](https://github.com/cmacrae/emacs/blob/master/flake.nix), but that's now removed and a much simpler version is left in its place. This is really just for personal use, but feel free to use anything you think would be useful.
 
 ## i3 and Sway integration
 
-A few scripts are included as packages for integration with i3 and Sway as well. They require some emacs functions to be defined, some global i3/Sway keybindings, and the use of an emacs daemon.
+A few scripts are included for integration with i3 and Sway as well. They require some emacs functions to be defined, some global i3/Sway keybindings, and the use of an emacs daemon.
 
 - TODO: add details
 
