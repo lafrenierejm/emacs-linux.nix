@@ -28,8 +28,8 @@
       });
     in {
 
+      defaultPackage = forAllSystems (system: nixpkgsFor.${system}.emacs29);
       packages = forAllSystems (system: {
-        default = nixpkgsFor.${system}.emacs29;
         emacs29 = nixpkgsFor.${system}.emacs29;
         emacs-vterm = nixpkgsFor.${system}.emacs-vterm;
         emacs-i3-integration = nixpkgsFor.${system}.emacs-i3-integration;
