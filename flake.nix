@@ -11,14 +11,16 @@
       url = github:akermu/emacs-libvterm;
       flake = false;
     };
-    # emacs-src = {
+    emacs-src = {
     #   url = git+https://git.savannah.gnu.org/git/emacs.git;
-    #   flake = false;
-    # };
+    #   rev = "cae528457cb862dc886a34240c9d4c73035b6659";
+      url = github:emacs-mirror/emacs/cae528457cb862dc886a34240c9d4c73035b6659;
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, emacs-overlay, emacs-vterm-src,
-              # emacs-src,
+              emacs-src,
               ... }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -88,7 +90,7 @@
             # # only needed if I decide to not start from the community overlay:
             # # note that not using the community overlay means losing builtin treesitter
             # version = "30.0.50";
-            # src = emacs-src;
+            src = emacs-src;
             # patches = [ ];
             # postPatch = old.postPatch + ''
             #   substituteInPlace lisp/loadup.el \

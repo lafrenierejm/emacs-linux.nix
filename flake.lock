@@ -21,6 +21,23 @@
         "type": "github"
       }
     },
+    "emacs-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1672569072,
+        "narHash": "sha256-4LHr+wtl641JnHP4c8RuPgac89A/I1Q84AqfIOioKpU=",
+        "owner": "emacs-mirror",
+        "repo": "emacs",
+        "rev": "cae528457cb862dc886a34240c9d4c73035b6659",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emacs-mirror",
+        "repo": "emacs",
+        "rev": "cae528457cb862dc886a34240c9d4c73035b6659",
+        "type": "github"
+      }
+    },
     "emacs-vterm-src": {
       "flake": false,
       "locked": {
@@ -71,6 +88,7 @@
     "root": {
       "inputs": {
         "emacs-overlay": "emacs-overlay",
+        "emacs-src": "emacs-src",
         "emacs-vterm-src": "emacs-vterm-src",
         "nixpkgs": "nixpkgs"
       }
