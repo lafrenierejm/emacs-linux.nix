@@ -3,36 +3,34 @@
 
   inputs = {
     nixpkgs.url = github:NixOS/nixpkgs/nixos-unstable;
-    emacs-overlay = {
-      url = github:nix-community/emacs-overlay;
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     emacs-vterm-src = {
       url = github:akermu/emacs-libvterm;
       flake = false;
     };
-    emacs-src = {
-    #   url = git+https://git.savannah.gnu.org/git/emacs.git;
-    #   rev = "cae528457cb862dc886a34240c9d4c73035b6659";
-      url = github:emacs-mirror/emacs/cae528457cb862dc886a34240c9d4c73035b6659;
+    emacs29-src = {
+      # url = git+https://git.savannah.gnu.org/git/emacs.git?ref=emacs-29;
+      url = github:emacs-mirror/emacs/emacs-29;
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, emacs-overlay, emacs-vterm-src,
-              emacs-src,
+  outputs = { self,
+              nixpkgs,
+              emacs-vterm-src,
+              emacs29-src,
               ... }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs {
         inherit system;
-        overlays = [ emacs-overlay.overlay self.overlay ];
+        overlays = [ self.overlay ];
       });
     in {
 
       packages = forAllSystems (system: {
-        emacs = nixpkgsFor.${system}.emacs;
+        default = nixpkgsFor.${system}.emacs29;
+        emacs29 = nixpkgsFor.${system}.emacs29;
         emacs-vterm = nixpkgsFor.${system}.emacs-vterm;
         emacs-i3-integration = nixpkgsFor.${system}.emacs-i3-integration;
         emacs-sway-integration = nixpkgsFor.${system}.emacs-sway-integration;
@@ -77,7 +75,7 @@
           '';
         };
 
-        emacs = (prev.emacsGit.override {
+        emacs29 = (prev.emacs.override {
           srcRepo = true;
           nativeComp = true;
           withSQLite3 = true;
@@ -87,26 +85,28 @@
         }).overrideAttrs (
           old: rec {
 
-            # # only needed if I decide to not start from the community overlay:
-            # # note that not using the community overlay means losing builtin treesitter
-            # version = "30.0.50";
-            src = emacs-src;
-            # patches = [ ];
-            # postPatch = old.postPatch + ''
-            #   substituteInPlace lisp/loadup.el \
-            #   --replace '(emacs-repository-get-branch)' '"master"'
-            # '';
+            # note that not using the community overlay means losing builtin treesitter
 
-            # # shouldn't need these, but it should also be equivalent:
-            # configureFlags = [
-            #   "--disable-build-details"
-            #   "--with-x-toolkit=gtk3"
-            #   "--with-native-compilation"
-            #   "--with-xinput2"
-            # ];
+            version = "29.0.60";
+            src = emacs29-src;
+            patches = [ ];
+            postPatch = old.postPatch + ''
+              substituteInPlace lisp/loadup.el \
+              --replace '(emacs-repository-get-version)' '"${version}"' \
+              --replace '(emacs-repository-get-branch)' '"emacs-29"'
+            '';
+
+            # shouldn't need these, removing this should give the same build in theory
+            configureFlags = [
+              "--disable-build-details"
+              "--with-x-toolkit=gtk3"
+              "--with-native-compilation"
+              "--with-xinput2"
+            ];
 
             CFLAGS = "-O3 -pipe -march=native -fPIC -fomit-frame-pointer";
 
+            # install vterm
             postInstall = old.postInstall + ''
               cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
               cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
