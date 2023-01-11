@@ -94,7 +94,26 @@
               substituteInPlace lisp/loadup.el \
               --replace '(emacs-repository-get-version)' '"${version}"' \
               --replace '(emacs-repository-get-branch)' '"emacs-29"'
-            '';
+            '' +
+            (prev.lib.optionalString (old ? NATIVE_FULL_AOT)
+              (let backendPath = (prev.lib.concatStringsSep " "
+                (builtins.map (x: ''\"-B${x}\"'') [
+                  # Paths necessary so the JIT compiler finds its libraries:
+                  "${prev.lib.getLib final.libgccjit}/lib"
+                  "${prev.lib.getLib final.libgccjit}/lib/gcc"
+                  "${prev.lib.getLib final.stdenv.cc.libc}/lib"
+                  
+                  # Executable paths necessary for compilation (ld, as):
+                  "${prev.lib.getBin final.stdenv.cc.cc}/bin"
+                  "${prev.lib.getBin final.stdenv.cc.bintools}/bin"
+                  "${prev.lib.getBin final.stdenv.cc.bintools.bintools}/bin"
+                ]));
+               in ''
+                  substituteInPlace lisp/emacs-lisp/comp.el --replace \
+                      "(defcustom comp-libgccjit-reproducer nil" \
+                      "(setq native-comp-driver-options '(${backendPath}))
+(defcustom comp-libgccjit-reproducer nil"
+              ''));
 
             # shouldn't need these, removing this should give the same build in theory
             configureFlags = [
