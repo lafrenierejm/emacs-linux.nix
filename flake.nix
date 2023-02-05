@@ -83,9 +83,39 @@
           withXinput2 = true;
           withWebP = true;
         }).overrideAttrs (
-          old: rec {
+          old:
 
-            # note that not using the community overlay means losing builtin treesitter
+          let
+            libName = drv: prev.lib.removeSuffix "-grammar" drv.pname;
+            libSuffix = "so";
+            lib = drv: ''lib${libName drv}.${libSuffix}'';
+            linkCmd = drv: ''ln -s ${drv}/parser $out/lib/${lib drv}'';
+            plugins = with final.pkgs.tree-sitter-grammars; [
+              tree-sitter-bash
+              tree-sitter-c
+              tree-sitter-c-sharp
+              tree-sitter-cmake
+              tree-sitter-cpp
+              tree-sitter-css
+              tree-sitter-dockerfile
+              tree-sitter-go
+              tree-sitter-gomod
+              tree-sitter-html
+              tree-sitter-java
+              tree-sitter-javascript
+              tree-sitter-julia
+              tree-sitter-json
+              tree-sitter-python
+              tree-sitter-ruby
+              tree-sitter-rust
+              tree-sitter-toml
+              tree-sitter-tsx
+              tree-sitter-typescript
+              tree-sitter-yaml
+            ];
+            tree-sitter-grammars = prev.runCommandCC "tree-sitter-grammars" {}
+              (prev.lib.concatStringsSep "\n" (["mkdir -p $out/lib"] ++ (map linkCmd plugins)));
+          in rec {
 
             version = "29.0.60";
             src = emacs29-src;
@@ -114,6 +144,12 @@
                       "(setq native-comp-driver-options '(${backendPath}))
 (defcustom comp-libgccjit-reproducer nil"
               ''));
+
+            buildInputs = old.buildInputs ++ [ self.pkgs.tree-sitter tree-sitter-grammars ];
+            TREE_SITTER_LIBS = "-ltree-sitter";
+            postFixup = old.postFixup + ''
+                ${final.pkgs.patchelf}/bin/patchelf --add-rpath ${prev.lib.makeLibraryPath [ tree-sitter-grammars ]} $out/bin/emacs
+              '';
 
             # shouldn't need these, removing this should give the same build in theory
             configureFlags = [
