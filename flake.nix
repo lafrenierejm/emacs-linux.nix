@@ -144,7 +144,7 @@
 (defcustom comp-libgccjit-reproducer nil"
               ''));
 
-            buildInputs = old.buildInputs ++ [ self.pkgs.tree-sitter tree-sitter-grammars ];
+            buildInputs = old.buildInputs ++ [ final.pkgs.tree-sitter tree-sitter-grammars ];
             TREE_SITTER_LIBS = "-ltree-sitter";
             postFixup = old.postFixup + ''
                 ${final.pkgs.patchelf}/bin/patchelf --add-rpath ${prev.lib.makeLibraryPath [ tree-sitter-grammars ]} $out/bin/emacs
