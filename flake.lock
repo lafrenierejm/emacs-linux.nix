@@ -1,26 +1,5 @@
 {
   "nodes": {
-    "emacs-overlay": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1676258056,
-        "narHash": "sha256-LhXVnPc+IPHupy7QexUrzYuloSGXvXEgvIkAlhFs+yY=",
-        "owner": "nix-community",
-        "repo": "emacs-overlay",
-        "rev": "09ebba158540ba3171b5f319b71427b51db8794b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
     "emacs-vterm-src": {
       "flake": false,
       "locked": {
@@ -37,18 +16,20 @@
         "type": "github"
       }
     },
-    "flake-utils": {
+    "emacs29-src": {
+      "flake": false,
       "locked": {
-        "lastModified": 1667395993,
-        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "lastModified": 1676260187,
+        "narHash": "sha256-3K4bxeW6ci8o4QdSRVyXn3BnsfdMD0LzNf60KKlzM/s=",
+        "owner": "emacs-mirror",
+        "repo": "emacs",
+        "rev": "f2114e8d89feed154a1c523c925ff2fb9fa9ba9a",
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
+        "owner": "emacs-mirror",
+        "ref": "emacs-29",
+        "repo": "emacs",
         "type": "github"
       }
     },
@@ -70,8 +51,8 @@
     },
     "root": {
       "inputs": {
-        "emacs-overlay": "emacs-overlay",
         "emacs-vterm-src": "emacs-vterm-src",
+        "emacs29-src": "emacs29-src",
         "nixpkgs": "nixpkgs"
       }
     }
