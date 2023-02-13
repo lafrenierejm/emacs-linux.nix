@@ -1,13 +1,34 @@
 {
   "nodes": {
+    "emacs-overlay": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1676258056,
+        "narHash": "sha256-LhXVnPc+IPHupy7QexUrzYuloSGXvXEgvIkAlhFs+yY=",
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "rev": "09ebba158540ba3171b5f319b71427b51db8794b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "type": "github"
+      }
+    },
     "emacs-vterm-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1668779692,
-        "narHash": "sha256-dNW3eXgFgah7eIug+MqXTl59HfSbM5HLKwHdp1CAmyo=",
+        "lastModified": 1675064717,
+        "narHash": "sha256-QOFYu6fknL01KDvgvXpD/JMcbI6IGsHITFKXHZ+jGxA=",
         "owner": "akermu",
         "repo": "emacs-libvterm",
-        "rev": "f14d113ee4618f052879509ec378feb9766b871b",
+        "rev": "990cc18decb489c54d16d03fd8acbfe268b98a9c",
         "type": "github"
       },
       "original": {
@@ -16,30 +37,28 @@
         "type": "github"
       }
     },
-    "emacs29-src": {
-      "flake": false,
+    "flake-utils": {
       "locked": {
-        "lastModified": 1673265784,
-        "narHash": "sha256-Gr7MM7euPryWai2+tSlQAOap9IKt6OZ++MfxpuLC39E=",
-        "owner": "emacs-mirror",
-        "repo": "emacs",
-        "rev": "ebc5263667b17af30d8e91b47aba0cdd67a389d4",
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
         "type": "github"
       },
       "original": {
-        "owner": "emacs-mirror",
-        "ref": "emacs-29",
-        "repo": "emacs",
+        "owner": "numtide",
+        "repo": "flake-utils",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1673134516,
-        "narHash": "sha256-mAZQKqkNQbBmJnmUU0blOfkKlgMSSVyPHdeWeuKad8U=",
+        "lastModified": 1676110339,
+        "narHash": "sha256-kOS/L8OOL2odpCOM11IevfHxcUeE0vnZUQ74EOiwXcs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f6f44561884c3470e2b783683d5dbac42dfc833b",
+        "rev": "e5530aba13caff5a4f41713f1265b754dc2abfd8",
         "type": "github"
       },
       "original": {
@@ -51,8 +70,8 @@
     },
     "root": {
       "inputs": {
+        "emacs-overlay": "emacs-overlay",
         "emacs-vterm-src": "emacs-vterm-src",
-        "emacs29-src": "emacs29-src",
         "nixpkgs": "nixpkgs"
       }
     }
