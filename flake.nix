@@ -12,12 +12,18 @@
       url = github:emacs-mirror/emacs/emacs-29;
       flake = false;
     };
+    emacs30-src = {
+      # url = git+https://git.savannah.gnu.org/git/emacs.git?ref=master;
+      url = github:emacs-mirror/emacs/master;
+      flake = false;
+    };
   };
 
   outputs = { self,
               nixpkgs,
               emacs-vterm-src,
               emacs29-src,
+              emacs30-src,
               ... }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -31,6 +37,7 @@
       defaultPackage = forAllSystems (system: nixpkgsFor.${system}.emacs29);
       packages = forAllSystems (system: {
         emacs29 = nixpkgsFor.${system}.emacs29;
+        emacs30 = nixpkgsFor.${system}.emacs30;
         emacs-vterm = nixpkgsFor.${system}.emacs-vterm;
         emacs-i3-integration = nixpkgsFor.${system}.emacs-i3-integration;
         emacs-sway-integration = nixpkgsFor.${system}.emacs-sway-integration;
@@ -123,6 +130,102 @@
               substituteInPlace lisp/loadup.el \
               --replace '(emacs-repository-get-version)' '"${version}"' \
               --replace '(emacs-repository-get-branch)' '"emacs-29"'
+            '' +
+            (prev.lib.optionalString (old ? NATIVE_FULL_AOT)
+              (let backendPath = (prev.lib.concatStringsSep " "
+                (builtins.map (x: ''\"-B${x}\"'') [
+                  # Paths necessary so the JIT compiler finds its libraries:
+                  "${prev.lib.getLib final.libgccjit}/lib"
+                  "${prev.lib.getLib final.libgccjit}/lib/gcc"
+                  "${prev.lib.getLib final.stdenv.cc.libc}/lib"
+                  
+                  # Executable paths necessary for compilation (ld, as):
+                  "${prev.lib.getBin final.stdenv.cc.cc}/bin"
+                  "${prev.lib.getBin final.stdenv.cc.bintools}/bin"
+                  "${prev.lib.getBin final.stdenv.cc.bintools.bintools}/bin"
+                ]));
+               in ''
+                  substituteInPlace lisp/emacs-lisp/comp.el --replace \
+                      "(defcustom comp-libgccjit-reproducer nil" \
+                      "(setq native-comp-driver-options '(${backendPath}))
+(defcustom comp-libgccjit-reproducer nil"
+              ''));
+
+            # this is necessary with GTK3 for treesitter to work
+            nativeBuildInputs = (prev.lib.remove prev.wrapGAppsHook old.nativeBuildInputs);
+
+            buildInputs = old.buildInputs ++ [ final.pkgs.tree-sitter tree-sitter-grammars ];
+            TREE_SITTER_LIBS = "-ltree-sitter";
+            postFixup = old.postFixup + ''
+                ${final.pkgs.patchelf}/bin/patchelf --add-rpath ${prev.lib.makeLibraryPath [ tree-sitter-grammars ]} $out/bin/emacs
+              '';
+
+            # shouldn't need these, removing this should give the same build in theory
+            configureFlags = [
+              "--disable-build-details"
+              "--with-x-toolkit=gtk3"
+              "--with-native-compilation"
+              "--with-xinput2"
+            ];
+
+            CFLAGS = "-O3 -pipe -march=native -fPIC -fomit-frame-pointer";
+
+            # install vterm
+            postInstall = old.postInstall + ''
+              cp ${final.emacs-vterm}/vterm.el $out/share/emacs/site-lisp/vterm.el
+              cp ${final.emacs-vterm}/vterm-module.so $out/share/emacs/site-lisp/vterm-module.so
+            '';
+          }
+        );
+
+        emacs30 = (prev.emacs.override {
+          srcRepo = true;
+          nativeComp = true;
+          withSQLite3 = true;
+          withGTK3 = true;
+          withXinput2 = true;
+          withWebP = true;
+        }).overrideAttrs (
+          old:
+
+          let
+            libName = drv: prev.lib.removeSuffix "-grammar" drv.pname;
+            libSuffix = "so";
+            lib = drv: ''lib${libName drv}.${libSuffix}'';
+            linkCmd = drv: ''ln -s ${drv}/parser $out/lib/${lib drv}'';
+            plugins = with final.pkgs.tree-sitter-grammars; [
+              tree-sitter-bash
+              tree-sitter-c
+              tree-sitter-cmake
+              tree-sitter-cpp
+              tree-sitter-css
+              tree-sitter-dockerfile
+              tree-sitter-go
+              tree-sitter-gomod
+              tree-sitter-html
+              tree-sitter-java
+              tree-sitter-javascript
+              tree-sitter-julia
+              tree-sitter-json
+              tree-sitter-python
+              tree-sitter-ruby
+              tree-sitter-rust
+              tree-sitter-toml
+              tree-sitter-tsx
+              tree-sitter-typescript
+              tree-sitter-yaml
+            ];
+            tree-sitter-grammars = prev.runCommandCC "tree-sitter-grammars" {}
+              (prev.lib.concatStringsSep "\n" (["mkdir -p $out/lib"] ++ (map linkCmd plugins)));
+          in rec {
+
+            version = "30.0.50";
+            src = emacs30-src;
+            patches = [ ];
+            postPatch = old.postPatch + ''
+              substituteInPlace lisp/loadup.el \
+              --replace '(emacs-repository-get-version)' '"${version}"' \
+              --replace '(emacs-repository-get-branch)' '"master"'
             '' +
             (prev.lib.optionalString (old ? NATIVE_FULL_AOT)
               (let backendPath = (prev.lib.concatStringsSep " "
