@@ -145,7 +145,7 @@
               ''));
 
             # this is necessary with GTK3 for treesitter to work
-            nativeBuildInputs = (lib.remove pkgs.wrapGAppsHook old.nativeBuildInputs);
+            nativeBuildInputs = (prev.lib.remove prev.wrapGAppsHook old.nativeBuildInputs);
 
             buildInputs = old.buildInputs ++ [ final.pkgs.tree-sitter tree-sitter-grammars ];
             TREE_SITTER_LIBS = "-ltree-sitter";
