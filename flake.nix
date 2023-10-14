@@ -84,7 +84,7 @@
 
         emacs29 = (prev.emacs.override {
           srcRepo = true;
-          nativeComp = true;
+          withNativeCompilation = true;
           withSQLite3 = true;
           withGTK3 = true;
           withXinput2 = true;
@@ -180,7 +180,7 @@
 
         emacs30 = (prev.emacs.override {
           srcRepo = true;
-          nativeComp = true;
+          withNativeCompilation = true;
           withSQLite3 = true;
           withGTK3 = true;
           withXinput2 = true;
