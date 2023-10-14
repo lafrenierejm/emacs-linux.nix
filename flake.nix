@@ -123,7 +123,7 @@
               (prev.lib.concatStringsSep "\n" (["mkdir -p $out/lib"] ++ (map linkCmd plugins)));
           in rec {
 
-            version = "29.0.60";
+            version = "29.1.50";
             src = emacs29-src;
             patches = [ ];
             postPatch = old.postPatch + ''
